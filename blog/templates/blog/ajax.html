@@ -1,0 +1,44 @@
+<script type="text/javascript">
+
+
+
+  $(document).ready(function () {
+    
+    const likeButton = $('#likebtn');
+    let isLiked = "{{ isLiked }}" === "True"; // Combine declaration and assignment
+    csrf = $("input[name=csrfmiddlewaretoken]").val()
+
+    likeButton.click(function (e) {
+      e.stopImmediatePropagation();
+     
+
+      $.ajax({
+        type: "POST",
+        url: "{% url 'postliked' %}",
+        data: { 'pk': "{{ post.post_id }}", 'username': "{{ request.user.username }}",csrfmiddlewaretoken:csrf },
+        dataType: 'json'
+      }).done(function (data) {
+        if (data.status == 401){
+  
+          $('#loginRequiredModal').modal('toggle')
+          // window.location.replace("{% url 'sign-in-user' %}?next={{post.post_id}}/{{post.post_title|slugify}}");
+        }else if (data.status == 1){
+          isLiked = data.isLiked; // Update isLiked directly
+        likeButton.find("span").text(isLiked ? "Liked" : "Like") // Combine DOM manipulation
+        likeButton.toggleClass("btn-danger btn-outline-danger"); // Minimize class manipulation
+        }
+ 
+      });
+    });
+
+  // } else {
+  //   console.log("login Required")
+  // }
+  });
+
+
+
+
+
+
+</script>

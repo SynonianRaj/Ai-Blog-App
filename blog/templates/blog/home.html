@@ -1,0 +1,55 @@
+{% extends "./base.html" %}
+
+{% load static %}
+{% load read_times %}
+{% block title %}
+My Blog
+{% endblock title %}
+
+{% block meta-tag %}
+
+content="{{posts.meta_tag}}"
+
+{% endblock meta-tag %}
+
+{% block keywords %}
+content="{{posts.keywords}}"
+
+{% endblock keywords %}
+
+{% block content %}
+
+{% for post in posts %}
+
+<article class="media card border-secondary" style="margin: 1rem 0;">
+    <div class="card-body media-body">
+        <h5 class="card-title">{{post.post_title}}</h5>
+        <h6 id="reading-time" class="card-subtitle mb-2 text-muted">{{post.post_content | readtime }}</h6>
+        <p class="card-text">{{post.post_content | truncatewords:50 |markdown|striptags }}</p>
+                                                <!--  | safe    -->
+        <a href="{% url 'article-page' post.post_id post.post_title|slugify %}" class="stretched-link">Continue
+            Reading</a>
+
+    </div>
+
+</article>
+
+{% endfor %}
+
+{% endblock content %}
+
+
+
+<!-- Most Liked Posts -->
+{% block mostLiked %}
+                   
+<div class="list-group">
+    {% for post in most_liked_posts %}
+    <a href="{% url 'article-page' post.post_id post.post_title|slugify %}" class="list-group-item d-flex justify-content-between align-items-center">
+      {{post.post_title}}
+      <span class="badge bg-primary rounded-pill">{{post.total_likes}}</span>
+    </a>
+      {% endfor %}
+</div>
+
+{% endblock mostLiked %}

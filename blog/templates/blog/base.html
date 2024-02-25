@@ -1,0 +1,168 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" {% block meta-tag %} content="Free Web tutorials" {% endblock meta-tag %}>
+    <meta name="keywords" {% block keywords%} content="HTML, CSS, JavaScript" {% endblock keywords %}>
+    <meta name="author" content="AI">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %} My Blog {% endblock title %}</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{% static 'main.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+   
+    {% block script %}
+    {% endblock script %}
+</head>
+
+
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="{% url 'blog-home' %}">My Blog</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarsExample07" aria-controls="navbarsExample07" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarsExample07">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="{% url 'blog-home' %}">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'blog-about' %}">About</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'blog-contact' %}">Contact</a>
+                        </li>
+                    </ul>
+                    <!-- <form class="d-flex" role="search">
+                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-outline-light" type="submit">Search</button>
+                    </form> -->
+
+
+                    <div class="nav-item d-flex navbar-nav ">
+                        {% if not user.is_authenticated %}
+                        <a class="nav-link active" href="{% url 'sign-up-user' %}"><i
+                                class="bi bi-person-plus-fill"></i> Register </a>
+                        <a class="nav-link active" href="{% url 'sign-in-user' %}"><i class="bi bi-person-fill"></i>
+                            Login </a>
+                        {% else %}
+
+                        <a class="fs-4 text-white text-decoration-none me-3" href="{% url 'userprofile:user-profile-page' %}">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                                class="bi bi-person-circle" viewBox="0 0 16 16">
+                                <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"></path>
+                                <path fill-rule="evenodd"
+                                    d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1">
+                                </path>
+                            </svg>
+                            <span>{{request.user.first_name|title}}</span>
+
+                        </a>
+
+
+
+                        <a class="btn btn-outline-light" href="{% url 'sign-out-user' %}">Log Out</a>
+                        {% endif %}
+
+                    </div>
+
+                </div>
+            </div>
+        </nav>
+
+    </header>
+
+
+
+    <main role="main " class="container">
+        <div class="row">
+            <div class="col-md-8 p-3">
+                {% if messages %}
+                {% for message in messages %}
+
+                <div class="alert alert-{{message.tags}}" role="alert">
+
+                    {% if user.is_authenticated %}
+                    {{message}} {{request.user.first_name | title}} {{request.user.last_name}}
+                    {% else %}
+                    {{message|safe}}
+                    {% endif %}
+
+
+                </div>
+                {% endfor %}
+                {% endif %}
+
+                {% block content %}{% endblock %}
+            </div>
+            <div class="col-md-4 p-3" style="margin: 1rem 0;">
+                <div class="p-3 rounded border border-secondary">
+
+                    <form class="d-flex p-1" role="search">
+                        <input class="form-control me-2 rounded border border-secondary " type="search"
+                            placeholder="Search" aria-label="Search">
+                        <button class="btn btn-outline-dark" type="submit">Search</button>
+                    </form>
+
+                    <p class='text-muted'>You can search here.
+                        <div class="alert alert-info m-0"><span>Most Liked</span></div>
+                        {% block mostLiked %}
+                        <div class="list-group">
+                            {% for post in most_liked_posts %}
+                            <a href="{% url 'article-page' post.post_id post.post_title|slugify %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                              {{post.post_title}}
+                              <span class="badge bg-primary rounded-pill">{{post.total_likes}}</span>
+                            </a>
+                              {% endfor %}
+                        </div>
+                        {% endblock %}
+                        
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+
+      <!-- Modal -->
+  <div class="modal fade" id="loginRequiredModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title fs-5" id="exampleModalLabel">Login Required</h5>
+          <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
+        </div>
+        <div class="modal-footer d-flex justify-content-center">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <a href="{% url 'sign-in-user' %}?next={{request.path}}" type="button" class="btn btn-primary">Login </a>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+        integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+        crossorigin="anonymous"></script>
+
+</body>
+
+</html>

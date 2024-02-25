@@ -1,0 +1,58 @@
+{% extends "./base.html" %}
+{% block content %}
+
+<div class="card border-secondary" style="margin: 1rem 0;">
+    <div class="card-body">
+        <h1 class="text-center mb-4">User Registration</h1>
+        <form id="registration-form" method="POST">
+            {% csrf_token %}
+
+            <div class="form-group d-flex">
+                <div class="inline-field me-2">
+                    <label for="first-name">First Name:</label>
+                    <input type="text" class="form-control" id="first-name" name="first_name" required>
+                    <div id="first-name-error" class="error-message"></div>
+                </div>
+                <div class="inline-field ms-2">
+                    <label for="last-name">Last Name:</label>
+                    <input type="text" class="form-control" id="last-name" name="last_name" required>
+                    <div id="last-name-error" class="error-message"></div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" class="form-control" id="username" name="username" required>
+                <div id="username-error" class="error-message"></div>
+            </div>
+            <div class="form-group">
+                <label for="email">Email Address:</label>
+                <input type="email" class="form-control" id="email" name="email" required>
+                <div id="email-error" class="error-message"></div>
+            </div>
+          
+
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+                <div id="password-error" class="error-message"></div>
+            </div>
+            <div class="form-group">
+                <label for="confirm-password">Confirm Password:</label>
+                <input type="password" class="form-control" id="confirm-password" name="confirm-password" required>
+                <div id="confirm-password-error" class="error-message"></div>
+            </div>
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="terms" name="terms" required>
+                <label class="form-check-label" for="terms">I agree to the terms and conditions.</label>
+                <div id="terms-error" class="error-message"></div>
+            </div>
+            <button type="submit" class="btn btn-primary mt-3">Register</button>
+
+            <p class="text-center">Already have an Account? <a href="{% url 'sign-in-user' %}"> Login here </a></p>
+        </form>
+    </div>
+
+</div>
+
+{% endblock %}
