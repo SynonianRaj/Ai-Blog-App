@@ -22,19 +22,21 @@ content="{{posts.keywords}}"
 {% for post in posts %}
 
 <article class="media card border-secondary" style="margin: 1rem 0;">
-    <div class="card-body media-body">
-        <h5 class="card-title">{{post.post_title}}</h5>
-        <h6 id="reading-time" class="card-subtitle mb-2 text-muted">{{post.post_content | readtime }}</h6>
-        <p class="card-text">{{post.post_content | truncatewords:50 |markdown|striptags }}</p>
-                                                <!--  | safe    -->
-        <a href="{% url 'article-page' post.post_id post.post_title|slugify %}" class="stretched-link">Continue
-            Reading</a>
+  <div class="card-body media-body">
+    <h5 class="card-title">{{post.post_title}}</h5>
+    <h6 id="reading-time" class="card-subtitle mb-2 text-muted">{{post.post_content | readtime }}</h6>
+    <p class="card-text">{{post.post_content | truncatewords:50 |markdown|striptags }}</p>
+    <!--  | safe    -->
+    <a href="{% url 'article-page' post.post_id post.post_title|slugify %}" class="stretched-link">Continue
+      Reading</a>
 
-    </div>
+  </div>
 
 </article>
 
 {% endfor %}
+
+<button type="button" id="loadmorebtn" class="btn btn-outline-primary mx-auto d-block btn-lg">Load More</button>
 
 {% endblock content %}
 
@@ -42,14 +44,51 @@ content="{{posts.keywords}}"
 
 <!-- Most Liked Posts -->
 {% block mostLiked %}
-                   
+
 <div class="list-group">
-    {% for post in most_liked_posts %}
-    <a href="{% url 'article-page' post.post_id post.post_title|slugify %}" class="list-group-item d-flex justify-content-between align-items-center">
-      {{post.post_title}}
-      <span class="badge bg-primary rounded-pill">{{post.total_likes}}</span>
-    </a>
-      {% endfor %}
+  {% for post in most_liked_posts %}
+  <a href="{% url 'article-page' post.post_id post.post_title|slugify %}"
+    class="list-group-item d-flex justify-content-between align-items-center">
+    {{post.post_title}}
+    <span class="badge bg-primary rounded-pill">{{post.total_likes}}</span>
+  </a>
+  {% endfor %}
 </div>
 
 {% endblock mostLiked %}
+
+
+{% block script %}
+
+<script type="text/javascript">
+
+
+
+  $(document).ready(function () {
+    var offset = 5
+    const loadBtn = $('#loadmorebtn');
+
+    loadBtn.click(function (e) {
+      e.stopImmediatePropagation();
+      $(this).prop('disabled', true);       // Disable the button
+      $(this).html('<span class="spinner-grow spinner-grow-lg align-middle" role="status" aria-hidden="true"></span>   Loading...');           // Change button text
+
+      $.ajax({
+        url: "{% url  'load-more-posts' %}",
+        type: "GET",
+        data: { 'offset': offset },
+        dataType: 'JSON',
+        success: function (data) {
+          if (data.status == 1) {
+            offset += data.posts.length;
+            loadBtn.prop('disabled', false); // Re-enable the button
+            loadBtn.text('Load More');
+          };
+        }
+      });
+    });
+  });
+
+</script>
+
+{% endblock script %}

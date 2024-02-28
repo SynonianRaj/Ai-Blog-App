@@ -11,8 +11,9 @@ from django.db.models import Count
 from django.template.defaultfilters import slugify
 from django.urls import reverse
 from django.utils.html  import format_html
-
-
+# from blog.utils import *
+# from genai import get_posts
+from django.views.decorators.csrf import requires_csrf_token
 
 
 
@@ -26,15 +27,15 @@ from django.utils.html  import format_html
 
 def home(requests):
  
-    posts = Posts.objects.all()
+    posts = Posts.objects.all().order_by('-post_id')[:5]
         # Use annotate() to calculate total_likes efficiently with an F-expression:
-    most_liked_posts = Posts.objects.annotate(total_likes=Count('post_liked')).order_by('-total_likes')
+    most_liked_posts = Posts.objects.annotate(total_likes=Count('post_liked')).filter(total_likes__gte = 1).order_by('-total_likes')
     # print(most_liked_posts.values("post_title")[:5])
 
     # If total_likes is frequently used in views or templates, consider optimizing its retrieval:
     # most_liked_posts = Posts.objects.select_related('user').prefetch_related('post_liked').annotate(total_likes=Count('post_liked')).order_by('-total_likes')[:5]
 
-    context = {'posts':posts.order_by('-post_id'),
+    context = {'posts':posts,
                'most_liked_posts':most_liked_posts[:5],
                }
     
@@ -142,6 +143,9 @@ def logout_page(requests):
 
 
 
+
+
+@requires_csrf_token
 def post_liked(request):
     if not request.user.is_authenticated:
         return JsonResponse({'status':401})
@@ -175,3 +179,12 @@ def share_clicked(request):
         isLiked = bool(post.post_liked.filter(id= uid.id).exists())
         return JsonResponse({'status':1, 'isLiked' : isLiked})
     return JsonResponse({'status': 0})
+
+
+def load_more_posts(requests):
+    offset = int(requests.GET.get('offset'))
+    limit = 5
+    posts = Posts.objects.all()[offset:offset+limit]
+    data = [{'id':post.post_id,'title': post.post_title, 'content': post.post_content} for post in posts]
+    
+    return JsonResponse({'status':1, 'posts' : data})

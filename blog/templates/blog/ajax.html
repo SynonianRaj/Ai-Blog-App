@@ -10,7 +10,6 @@
 
     likeButton.click(function (e) {
       e.stopImmediatePropagation();
-     
 
       $.ajax({
         type: "POST",
@@ -21,7 +20,7 @@
         if (data.status == 401){
   
           $('#loginRequiredModal').modal('toggle')
-          // window.location.replace("{% url 'sign-in-user' %}?next={{post.post_id}}/{{post.post_title|slugify}}");
+         
         }else if (data.status == 1){
           isLiked = data.isLiked; // Update isLiked directly
         likeButton.find("span").text(isLiked ? "Liked" : "Like") // Combine DOM manipulation
