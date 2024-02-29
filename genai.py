@@ -10,9 +10,9 @@ django.setup()
 
 # your imports, e.g. Django models
 from blog.models import Posts
-
+from api_keys import API_KEY
 # configure Gemini API key here
-genai.configure(api_key="YOUR_API_KEY")
+genai.configure(api_key=API_KEY)
 model = genai.GenerativeModel('gemini-pro')
 
 
