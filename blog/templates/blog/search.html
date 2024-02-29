@@ -1,1 +1,33 @@
-{% include "blog/base" %}
+{% extends "blog/base.html" %}
+{% load read_times %}
+
+{% block content %}
+
+
+{% if keywords %}
+<div class="alert alert-info">You searched for <strong>{{keywords}}</strong></div>
+{%else%}
+<div class="alert alert-info text-center">Nothing Found</div>
+{% endif %}
+<br>
+<br>
+
+{% for post in posts %}
+
+<article class="media card border-secondary" style="margin: 1rem 0;">
+  <div class="card-body media-body">
+    <h5 class="card-title">{{post.post_title}}</h5>
+    <h6 id="reading-time" class="card-subtitle mb-2 text-muted">{{post.post_content | readtime }}</h6>
+    <p class="card-text">{{post.post_content | truncatewords:50 |markdown|striptags }}</p>
+    <!--  | safe    -->
+    <a href="{% url 'article-page' post.post_id post.post_title|slugify %}" class="stretched-link">Continue
+      Reading</a>
+
+  </div>
+
+</article>
+
+{% endfor %}
+
+
+{% endblock content %}

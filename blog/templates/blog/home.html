@@ -36,7 +36,41 @@ content="{{posts.keywords}}"
 
 {% endfor %}
 
-<button type="button" id="loadmorebtn" class="btn btn-outline-primary mx-auto d-block btn-lg">Load More</button>
+<!-- <button type="button" id="loadmorebtn" class="btn btn-outline-primary mx-auto d-block btn-lg">Load More</button> -->
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<!--  Pagination --> 
+
+<div class="d-flex justify-content-center">
+  {% if posts.has_previous %}
+  <a class="btn btn-outline-primary me-1" href="?page=1">First</a>
+  <a class="btn btn-outline-primary me-1" href="?page={{posts.previous_page_number}}">Previous</a>
+  {% endif %}
+
+  {% for page_number in posts.paginator.page_range %}
+  {% if posts.number == page_number %}
+  <a class="btn btn-primary me-1" href="?page={{page_number}}">{{page_number}}</a>
+  {% elif page_number > posts.number|add:'-3' and page_number < posts.number|add:'3' %}
+  <a class="btn btn-outline-primary me-1" href="?page={{page_number}}">{{page_number}}</a>
+  {% endif %}
+  {% endfor %}
+
+
+  {% if posts.has_next %}
+  <a class="btn btn-outline-primary me-1" href="?page={{posts.next_page_number}}">Next</a>
+  <a class="btn btn-outline-primary me-1" href="?page={{posts.paginator.num_pages}}">Last</a>
+  {% endif %}
+
+
+
+</div>
+
+
 
 {% endblock content %}
 

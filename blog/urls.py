@@ -10,8 +10,9 @@ urlpatterns = [
     path('user/log-out',my_view.logout_page, name='sign-out-user'),
     path('article/<int:id>/<str:title>',my_view.articles, name='article-page'),
     path('postliked', my_view.post_liked, name='postliked'),
-    # path("get-post/", my_view.get_posts, name='get-post')
-    path('load-more-posts/',my_view.load_more_posts, name = 'load-more-posts')
+    # path("get-post/", my_view.get_posts, name='get-post'),
+    path('load-more-posts/',my_view.load_more_posts, name = 'load-more-posts'),
+    path('search', my_view.search_page, name='search-page'),
     
     
 

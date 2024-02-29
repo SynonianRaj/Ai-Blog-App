@@ -109,9 +109,10 @@
             <div class="col-md-4 p-3" style="margin: 1rem 0;">
                 <div class="p-3 rounded border border-secondary">
 
-                    <form class="d-flex p-1" role="search">
-                        <input class="form-control me-2 rounded border border-secondary " type="search"
-                            placeholder="Search" aria-label="Search">
+                    <form action="{% url 'search-page' %}" class="d-flex p-1" role="search" method="GET">
+                        
+                        <input name="query" class="form-control me-2 rounded border border-secondary " type="search"
+                            placeholder="Search" aria-label="Search" required>
                         <button class="btn btn-outline-dark" type="submit">Search</button>
                     </form>
 

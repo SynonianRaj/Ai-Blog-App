@@ -94,3 +94,10 @@ body {
     background-color: currentcolor;
     opacity: 1;
   }
+
+/* Base color for active and hover states */
+.page-item.active .page-link,
+.page-link:hover {
+  background-color: #007bff;  /* Primary blue from Bootstrap */
+  border-color: #007bff;
+}

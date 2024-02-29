@@ -14,11 +14,7 @@ from django.utils.html  import format_html
 # from blog.utils import *
 # from genai import get_posts
 from django.views.decorators.csrf import requires_csrf_token
-
-
-
-
-# Create your views here.
+from django.core.paginator import Paginator,PageNotAnInteger,EmptyPage
 
 
 
@@ -27,15 +23,23 @@ from django.views.decorators.csrf import requires_csrf_token
 
 def home(requests):
  
-    posts = Posts.objects.all().order_by('-post_id')[:5]
-        # Use annotate() to calculate total_likes efficiently with an F-expression:
-    most_liked_posts = Posts.objects.annotate(total_likes=Count('post_liked')).filter(total_likes__gte = 1).order_by('-total_likes')
-    # print(most_liked_posts.values("post_title")[:5])
+    posts = Posts.objects.all().order_by('-post_id')
+    most_liked_posts = Posts.objects.annotate(total_likes=Count('post_liked')
+                                              ).filter(total_likes__gte = 1).order_by('-total_likes')
+    paginate = Paginator(posts,5)
+    page = requests.GET.get("page")
+    try:
+        final_post = paginate.get_page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        final_post = paginate.get_page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        final_post = paginate.get_page(paginate.num_pages)
 
-    # If total_likes is frequently used in views or templates, consider optimizing its retrieval:
-    # most_liked_posts = Posts.objects.select_related('user').prefetch_related('post_liked').annotate(total_likes=Count('post_liked')).order_by('-total_likes')[:5]
+   
 
-    context = {'posts':posts,
+    context = {'posts':final_post,
                'most_liked_posts':most_liked_posts[:5],
                }
     
@@ -188,3 +192,14 @@ def load_more_posts(requests):
     data = [{'id':post.post_id,'title': post.post_title, 'content': post.post_content} for post in posts]
     
     return JsonResponse({'status':1, 'posts' : data})
+
+
+
+def search_page(requests):
+    if requests.method == "GET":
+        if keyword := requests.GET.get('query', ''):
+            print("Keyword: ", keyword)
+            posts = Posts.objects.filter(post_content__icontains=keyword)
+            if posts.exists():
+                return render(requests, 'blog/search.html', {'keywords': keyword, 'posts': posts})
+    return render(requests, 'blog/search.html')
