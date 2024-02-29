@@ -23,7 +23,7 @@ from django.core.paginator import Paginator,PageNotAnInteger,EmptyPage
 
 def home(requests):
  
-    posts = Posts.objects.all().order_by('-post_id')
+    posts = Posts.objects.all().order_by('-pub_date')
     most_liked_posts = Posts.objects.annotate(total_likes=Count('post_liked')
                                               ).filter(total_likes__gte = 1).order_by('-total_likes')
     paginate = Paginator(posts,5)

@@ -10,8 +10,14 @@ class Posts(models.Model):
     post_content = models.TextField()
     post_keywords = models.CharField(max_length=255)
     post_meta_tag = models.CharField(max_length=255)
-    post_liked = models.ManyToManyField(User, related_name="post_likes",default=[0],blank=True
-                                        )
+    post_liked = models.ManyToManyField(User, related_name="post_likes",default=[0]
+                                        ,blank=True)
+    # img_src = models.TextField(null = True,blank=True)
+    img_src = models.URLField(null = True, blank = True)
+    alt_text = models.CharField(max_length= 255, null = True, blank= True)
+    
+    pub_date = models.DateTimeField()
+    author = models.CharField(max_length=100)
 
     def total_likes(self):
         return self.post_liked.count()

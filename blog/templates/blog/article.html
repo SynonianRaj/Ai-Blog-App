@@ -9,10 +9,14 @@
 {% block script %}
 {% include "blog/ajax.html" %}
 {% endblock %}
-
+<!-- date:D d, M Y h:i:s  A -->
 
 <article class="container-fluid" style="margin: 1rem 0;">
+     <h5>{{post.post_title}}</h5>
+     <p class="mb-0"><small>Author: <strong>{{post.author}}</strong></small></p>
+     <p><small>{{post.pub_date|date:"D d, M Y h:i:s  A"}}</small></p>
      {{post.post_content| markdown| safe}}
+     
 </article>
 
 
