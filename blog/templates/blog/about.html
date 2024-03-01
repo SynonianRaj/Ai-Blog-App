@@ -2,8 +2,6 @@
 
 {% block content %}
 
-<button class="btn btn-outline-primary mx-auto d-block" type="button" id="loadmore">Load More</button>
-
 
 
 {% endblock content%}
@@ -11,30 +9,5 @@
 
 
 {% block script %}
-
-<script type="text/javascript">
-
-
-
-
-    $(document).ready(function() {
-    // Initially hide the spinner
-
-    $('#loadmore').click(function(e) {
-        e.stopImmediatePropagation();
-        $(this).prop('disabled', true);       // Disable the button
-        $(this).html('<span class="spinner-grow spinner-grow-lg align-middle" role="status" aria-hidden="true"></span>   Loading...');           // Change button text
-
-        setTimeout(function() {
-            // After simulated loading:
-            $('#loadmore').prop('disabled', false); // Re-enable the button
-            $('#loadmore').text('Load More');       // Reset button text 
-
-        }, 2000); // Simulate loading for 2 seconds
-    });
-});
-
-
-</script>
 
 {% endblock script %}
